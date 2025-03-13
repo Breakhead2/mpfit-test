@@ -74,7 +74,8 @@
 
 <footer class="bg-dark text-white text-center py-3">
     <div class="container">
-        <p class="mb-0">© {{ date('Y') }} Разработал <a href="https://github.com/Breakhead2" target="_blank" class="text-white" target="_blank">Denis Sazonov</a></p>
+        <a href="https://github.com/Breakhead2/mpfit-test" class="text-white" target="_blank">Репозиторий проекта</a>
+        <p class="mb-0">© {{ date('Y') }} Разработал <a href="https://github.com/Breakhead2" class="text-white" target="_blank">Denis Sazonov</a></p>
     </div>
 </footer>
 
