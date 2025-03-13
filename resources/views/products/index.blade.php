@@ -29,6 +29,7 @@
                     <td>{{ $product->price }} ₽</td>
                     <td>{{ $product->description }}</td>
                     <td class="d-flex gap-2">
+
                         <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm">Редактировать</a>
                         <form action="{{ route('products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Удалить товар?')">
                             @csrf
