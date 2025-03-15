@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->string('full_name');
-            $table->timestamp('order_date');
             $table->enum('status', ['new', 'completed'])->default('new');
             $table->text('comment')->nullable();
             $table->integer('quantity');

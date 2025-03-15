@@ -44,7 +44,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
                         <li><a class="dropdown-item" href="{{ route('orders.index') }}">Список заказов</a></li>
-                        <li><a class="dropdown-item" href="{{ route('orders.create') }}">Добавить заказ</a></li>
+                        <li><a class="dropdown-item" href="{{ route('orders.create') }}">Создать заказ</a></li>
                     </ul>
                 </li>
             </ul>

@@ -26,7 +26,7 @@
                         <a href="{{ route('products.show', $product->id) }}" target="_blank">{{ $product->name }}</a>
                     </td>
                     <td>{{ $product->category->name }}</td>
-                    <td>{{ $product->price }} ₽</td>
+                    <td>{{ number_format($product->price, 2, '.', ' ')}} ₽</td>
                     <td>{{ $product->description }}</td>
                     <td class="d-flex gap-2">
 

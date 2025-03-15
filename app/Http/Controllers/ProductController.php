@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -22,7 +22,7 @@ class ProductController extends Controller
      */
     public function index(): Response
     {
-        $products = $this->getProducts();
+        $products = $this->getProducts('paginate');
 
         return response()->view('products.index', [
             'products' => $products
@@ -30,13 +30,18 @@ class ProductController extends Controller
     }
 
     /**
-     * @return LengthAwarePaginator
+     * @param string $method
+     * @param int $perPage
+     * @return Collection|LengthAwarePaginator|array
      */
-    public function getProducts(): LengthAwarePaginator
+    public function getProducts(string $method = 'get', int $perPage = 10): Collection|LengthAwarePaginator|array
     {
-        return Product::with('category')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query =  Product::with('category')
+            ->orderBy('created_at', 'desc');
+
+        return $method === 'paginate' ?
+            $query->paginate($perPage):
+            $query->get();
     }
 
     /**
