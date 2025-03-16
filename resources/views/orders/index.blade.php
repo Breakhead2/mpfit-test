@@ -31,10 +31,15 @@
                             </span>
                         </td>
                         <td>{{ number_format($order->total_price, 2, '.', ' ')}} ₽</td>
-                        <td>
-                            <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-info btn-sm">
+                        <td class="d-flex gap-2">
+                            <a href="{{ route('orders.show', $order) }}" class="btn btn-info btn-sm">
                                 Просмотр
                             </a>
+                            <form action="{{ route('orders.destroy', $order) }}" method="POST" onsubmit="return confirm('Удалить заказ?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
                         </td>
                     </tr>
                 @empty

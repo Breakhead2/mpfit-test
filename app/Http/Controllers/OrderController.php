@@ -103,21 +103,23 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param Order $order
      * @return Response
      */
-    public function show($id)
+    public function show(Order $order): Response
     {
-        //
+        return response()->view('orders.show', [
+            'order' => $order
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param Order $order
      * @return Response
      */
-    public function edit($id)
+    public function edit(Order $order): Response
     {
         //
     }
@@ -126,23 +128,74 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
-     * @return Response
+     * @param Order $order
+     * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Order $order): RedirectResponse
     {
-        //
+        $request->validate(
+            [
+                'status' => ['required', 'in:completed'],
+            ],
+            [
+                'status.required' => 'Поле статус обязательно для заполнения.',
+                'status.in' => 'Статус должен быть только "completed".',
+            ]
+        );
+
+        $name = $order->full_name;
+        $orderDate = $order->created_at->format('d.m.Y H:i');
+
+        DB::beginTransaction();
+
+        try {
+            $order->status = $request->status;
+            $order->save();
+
+            DB::commit();
+
+            return redirect()->route('orders.show', $order)
+                ->with('success', "Статус заказа №{$order->id} на имя {$name} от {$orderDate} изменен на \"Выполнен\".");
+        } catch (Exception $exception) {
+            DB::rollBack();
+            Log::error("Ошибка обновления записи", [
+                'error' => $exception->getMessage(),
+                'request' => $request->all()
+            ]);
+
+            return redirect()->route('orders.show', $order)
+                ->with('errpr', "Ошибка обновления записи №{$order->id}. Попробуйте позже.");
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Order $order
+     * @return RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Order $order): RedirectResponse
     {
-        //
+        $name = $order->full_name;
+        $orderDate = $order->created_at->format('d.m.Y H:i');
+
+        DB::beginTransaction();
+
+        try {
+            $order->delete();
+            DB::commit();
+
+            return redirect()->route('orders.index')
+                ->with('success', "Заказ №{$order->id} на имя {$name} от {$orderDate} успешно удален.");
+        } catch (Exception $exception) {
+            DB::rollBack();
+            Log::error("Ошибка удаления заказа", [
+                'error' => $exception->getMessage()
+            ]);
+
+            return redirect()->route('orders.index')
+                ->with('error', "Заказ №{$order->id} на имя {$name} от {$orderDate} не был удален.");
+        }
     }
 
     private function calculateTotalPrice(Product $product, int $quantity): float

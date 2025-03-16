@@ -153,10 +153,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $product): RedirectResponse
     {
+        $name = $product->name;
+
         DB::beginTransaction();
 
         try {
-            $name = $product->name;
             $product->delete();
             DB::commit();
 
